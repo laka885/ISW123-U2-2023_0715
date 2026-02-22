@@ -18,6 +18,25 @@ namespace ISW123_2023_0715
             Console.WriteLine("Julian Vazquez - Matrícula: 2023-0715");
             Console.WriteLine("Sistema ATM Banco Popular - Iniciado");
             Console.WriteLine("=======================================");
+
+            OnTransaccionCompletada += (mensaje) => Console.WriteLine($"[NOTIFICACIÓN]: {mensaje}");
+
+            try
+            {
+                // Llamadas asíncronas
+                await ProcesarTransaccionAsync("Consulta de Balance");
+                await ProcesarTransaccionAsync("Transferencia ACH");
+
+                Console.WriteLine("\nVerificando fondos para retiro...");
+                throw new SaldoInsuficienteException_0715("Fondos insuficientes en la cuenta.");
+            }
+            catch (SaldoInsuficienteException_0715 ex)
+            {
+                Console.WriteLine($"\n[ERROR]: {ex.Message}");
+            }
+
+            Console.WriteLine("\nPresione cualquier tecla para salir.");
+            Console.ReadKey();
         }
 
         static async Task ProcesarTransaccionAsync(string tipo)
